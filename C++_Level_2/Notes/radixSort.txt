@@ -1,0 +1,21 @@
+Radix Sort
+
+	 this algorithm is a noncomparative sort!
+	Two kinds of Radix sort:  LSD and MSD - least sig digit and most sig digit
+first step: make all intergers into characters and then make them all of equel length
+		ex: 76 and 176 become 076 and 176
+
+
+using buckets to organize, going from left to right, but starting on the rightmost digit
+
+while doing this, we will have to create 2 different arrays to make this work
+
+runtime(worst case)
+	O(wn)
+	w = word size
+	n = number of elements OR list nodes;
+space complexity: O(w+n)
+
+big O notation chart on slide (3/19/2018)********* KNOW FOR TEST!!
+
+

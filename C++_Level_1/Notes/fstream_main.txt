@@ -1,0 +1,26 @@
+fstream 
+	reading until file has no more to display
+
+while (!inputFile.eof)		inputFile = object
+
+no blank lines at end of text file
+
+
+actual fstream object
+
+	ex
+
+	fstream iAndoFile;
+	
+	iandoFile.open("example.txt", ios::in | ios::out); // ios :: app = does not overwrite file, appends to file
+								append just adds automatically to end of the file
+	iandoFile >> numValues; // in this case, value was returned 25
+
+
+	for (int i=0; i < numValues; i++)
+		{
+			iandoFile << "Hi" << endl;
+		}	// saves 25 lines of Hi to example.txt
+
+
+	

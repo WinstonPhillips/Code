@@ -1,0 +1,5 @@
+quick sort: sort algorithm that uses divide and conquer method to quickly sort through data
+
+	how to choose the pivot?: median-of-three- we look at first, middle, and last elements of array
+
+merge sort: divides list into 2 halves (look up video)

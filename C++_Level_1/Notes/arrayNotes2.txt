@@ -1,0 +1,48 @@
+making a table
+cout << setw(15) << "Monkey";
+for (int i = 0; i < feeding days; i++;
+{
+cout << setw(7) << "Day " << i + 1;
+}
+
+for (int i = 0; i < NUMMONKEYS; i++)
+{
+	cout << setw(15) << "Monkey #" << i+1;
+	
+	for (int j = 0; j < FEEDINGDAYS; j++)
+		{
+			cout crap for arrays
+
+
+
+answers for practice test:
+
+1. true
+2. false
+3. false 
+4. true
+5. false
+6. false	(true for do while)
+7. true
+8. true
+9. false 
+10. lol
+
+11. opened(b)
+12. null terminator(D)
+13. 7(b)	if it was number++, the answer would be 6. number++ would change the value
+14. one (a)
+15. 66 (b)
+16. for (c)
+17. fstream(c)
+18. post-test (a)
+19. no brackets, so loop is only one line. Answer: B. n is incremented OUTSIDE OF THE LOOP
+20. 6 (a)
+21. subscripts // number three pertainss to a particular individual (test example)
+22. nested loop
+23. integer
+24. increment, decrement
+25. 0
+
+
+			

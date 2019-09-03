@@ -1,0 +1,26 @@
+/*
+	written and edited by: Winston Phillips
+	Date: 2/5/2018
+	Class: CSC 1310
+
+*/
+#include <iostream>
+#include "DogHealth.h"
+
+using namespace std;
+
+int main()
+{
+	cout << "\n\nHello!  Welcome to the Dog Health Program!\n\n";
+	
+	//this will call the constructor and ask the user to enter in all the dog's information
+	DogHealth myDog;
+	
+	myDog.printDogHealth();
+	
+	myDog.printWeightStatistics();
+	
+	myDog.printHeartRateStatistics();
+	
+	return 0;	
+}

@@ -1,0 +1,8 @@
+insertion sort
+
+look at slide
+
+selection sort
+
+	way less efficient
+	i would just stick with insertion and bubble sort

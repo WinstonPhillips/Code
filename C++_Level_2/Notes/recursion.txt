@@ -1,0 +1,18 @@
+Chapter 5- Recursion
+
+algorithm- a sequence of steps for solving a problem
+
+recursive algorithm- solves a problem by breaking down problem into smaller sub problems
+
+	must describe how to actually DO SOMETHING 
+		known as the base case
+
+
+
+recursive function- a function that calls itself
+
+depth of recursion- how many times a function called itself 
+
+base case: if a problem can be solved now, without recursion, then the function solves and returns 
+
+recursive step: recursive steps used to solve problems

@@ -1,0 +1,17 @@
+1/29/2018
+
+Templates
+
+template<typename LLama>
+	look at power point
+
+LLama getHighest(LLama highest, Llama lowest)
+{
+	// you are now working with llama
+}
+
+functions are either returning float, int, double or whatever BASED ON WHAT YOU SENT IT
+
+that is the beauty of templates-- very versatile
+
+useful when you have similiar functions returning different data types

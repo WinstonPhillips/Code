@@ -1,0 +1,17 @@
+try block: 
+	
+	int x;
+	try{
+
+	cin >> x;
+	} Catch (Exception e)	// e is just a variable 
+	{
+
+	Cout << "Wrong type of input" << endl;
+	cin.clear();
+	isgoodInput = false;
+	}
+
+11-3 239
+	
+	

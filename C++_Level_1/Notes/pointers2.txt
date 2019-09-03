@@ -1,0 +1,42 @@
+pointers 
+
+	for functions: ex
+
+void myFunction (int x)
+{
+ static int y = 5;
+ x = x+y;
+y++
+return x;
+}
+		// look at resizearray.cpp on website
+
+
+example of passing poointers
+void passybyValue(int x)
+{
+cout << x;
+}
+
+void passbyRef (int& x)  // pass by ref is like pointers for dummies
+{
+cout << x
+}
+
+void printbyPtr(int *x)
+{
+cout << *x;
+*x = *x +1;		// much like passing by reference. changes the information at the mem address
+}
+
+	***** both passing by ref and passing pointers allow us to access the original data
+
+	// fun fact: return 0; stops main wherever it is put
+
+
+library: <memory>
+
+introducing: smart pointers  // they automatically "clean up" for you
+
+unique 
+

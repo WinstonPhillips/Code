@@ -1,0 +1,5 @@
+Recursion(3rd day)
+
+exhaustive algorithm- an algorithm that finds a best combination of items by looking at ALL the possible combinations
+
+example: how many different ways are there to create change for a dollar?

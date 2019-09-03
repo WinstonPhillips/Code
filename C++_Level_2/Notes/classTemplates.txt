@@ -1,0 +1,22 @@
+1/31/2018
+
+class templates
+
+template<typename BooYah>
+class Node
+{
+/////////////////////
+}
+	// you can use BooYah in all of your class functions
+object creation:: Node<double> myNode;
+			// now, everywhere that there is booyah there is now a double.
+
+for class templates, must type #include file.cpp before #endif
+	file.cpp is the file that goes with that .h file
+
+in the function declarations (in the cpp file), before each and every function you must put templay<typename BooYah>
+	
+
+compiling:: cannot compile as usual
+
+	    You only have to compile main... if the cpp was included in a .h file we cannot compile it

@@ -1,0 +1,9 @@
+Pointers 1/22/2018
+
+review structPointe_1.cpp
+
+Linked list
+
+beneficial because you can change an array easily 
+
+just look at program of basic Linked List

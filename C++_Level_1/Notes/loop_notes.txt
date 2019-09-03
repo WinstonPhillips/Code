@@ -1,0 +1,23 @@
+loops 
+
+1 general case loop - while  // to stop, ^X  \r to make it look pretty (pretest)
+2 specific loops - for loop(counting) loop	(pretest)
+			used when you know exactly how many times you wish to loop
+
+		   i-- does not equel --i;
+	           i++ does equel ++i;
+
+			
+
+		   do while loop
+			will always execute at least once
+
+SENTINEL =  a number entered that will terminate the loop
+		   const int SENTINEL = -99;
+
+reading an writing to files 
+
+	Library needed : <fstream>
+	3 new types of variables: ifstream(read form a file), ofstream(write to a file), fstream
+	
+ 

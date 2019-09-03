@@ -1,0 +1,26 @@
+Vectors 
+
+	vectors are a class of data (like string)
+		
+	much like an array
+
+	vectors can be resized, unlike arrays
+	
+	#include<vector> 	// need the library
+
+	declaring a vector
+	
+
+myOtherVector.push_back(30); 	adding the number 30 to the vector myOtherVector
+					so now has 20 6's and 1 30
+
+myOtherVector.pop_back();	takes last element in vector and gets rid of it 
+
+cout << myOtherVector.at(i) << " ";	self explanatory
+
+ myOtherVector.clear();    you now have a zero element array 
+
+myOtherVector.resize(15,3); 	you now have an array with 15 elements, all composed of threes
+
+
+

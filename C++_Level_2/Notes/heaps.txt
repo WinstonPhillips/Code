@@ -1,0 +1,29 @@
+Heaps
+
+each node is greater than it's children
+	the top node is the largest value
+	Literally just like a binary tree, just kind of ordered (not necessarily a binary search tree)
+
+Minimum heap (lowest value at the top)
+
+	a binary tree where each node's value is smaller than their child
+
+	INSERT
+		you always insert in the tree's next empty spot
+			looking tio to bottom, and then left to right
+		2) we flip the parent with the child (if child is less than parent)
+			you keep doin this until the min-heap property is kept
+
+	REMOVE
+		a heap is an implementation of a primary queue. The root is top priority
+		A heap is a first in, first out basis (always remove the root)
+
+		1) get rid of smallest value
+		2) make the last level's last node the root
+		3) Fix the violation by swapping the node with it's child until there is no longer a violation
+		
+		**A HEAP IS TYPICALLY IMPLEMENTED AS AN ARRAY
+
+		equation for finding parent/children: leftchild: parent = index(2) + 1
+						      rightchild: parent = index(2) + 2
+						      parent finding children: (Index - 1) / 2

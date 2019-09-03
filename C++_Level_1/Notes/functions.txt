@@ -1,0 +1,18 @@
+Functions
+
+	when getting board;
+	
+printBoard(char board[])
+
+
+function call parts functionName(argument);
+
+function name 
+
+	void functionName (parameter);
+
+
+
+returning 
+
+int studentNum = functionCall();

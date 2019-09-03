@@ -1,0 +1,317 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    03/14/19 02:15:51
+quad.asm						     Page 1 - 1
+
+
+				; program to use the quadratic equation
+
+				.386
+				.MODEL FLAT
+
+				ExitProcess PROTO NEAR32 stdcall, dwExitCode:DWORD
+
+				.STACK  4096
+
+ 00000000			.DATA
+
+ 00000000 0000			_a_           				WORD   ?
+ 00000002 0000			_b_           				WORD   ?
+ 00000004 0000			_c_           				WORD   ?
+
+ 00000006 0000			discrim      			WORD   ?
+ 00000008 0000			root1        				WORD   ?
+ 0000000A 0000			root2        				WORD   ?
+
+ 0000000C 0000			numer					WORD ?
+ 0000000E 0000			denom					WORD ?
+
+ 00000010 45 6E 74 65 72	prompt_a      			BYTE   "Enter a: ", 0
+	   20 61 3A 20 00
+ 0000001A 45 6E 74 65 72	prompt_b      			BYTE   "Enter b: ", 0
+	   20 62 3A 20 00
+ 00000024 45 6E 74 65 72	prompt_c      			BYTE   "Enter c: ", 0
+	   20 63 3A 20 00
+
+ 0000002E 54 68 65 20 66	answer1      			BYTE   "The first root is: ", 0
+	   69 72 73 74 20
+	   72 6F 6F 74 20
+	   69 73 3A 20 00
+ 00000042 54 68 65 20 73	answer2      			BYTE   "The second root is: ", 0
+	   65 63 6F 6E 64
+	   20 72 6F 6F 74
+	   20 69 73 3A 20
+	   00
+ 00000057 43 6F 6D 70 6C	complex_roots		BYTE   "Complex roots, good luck with that.", 0
+	   65 78 20 72 6F
+	   6F 74 73 2C 20
+	   67 6F 6F 64 20
+	   6C 75 63 6B 20
+	   77 69 74 68 20
+	   74 68 61 74 2E
+	   00
+
+				INCLUDE debug.h
+			      C INCLUDE io.h
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+			      C 
+ = 0000000D		      C CR          EQU    0Dh   ; carriage return character
+ = 0000000A		      C LF          EQU    0Ah   ; linefeed character
+			      C 
+ 0000007B		      C .DATA
+ 0000007B 0D 0A 00	      C carriage    BYTE     CR, LF, 0
+ 0000007E  0000000D [	      C text        BYTE     13 DUP(?)
+	    00
+	   ]
+			      C 
+			      C outputW    	MACRO   var
+			      C                    itoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C                 ENDM
+			      C 
+			      C outputD  	MACRO  var
+			      C                    dtoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C          	ENDM
+			      C 
+			      C inputW          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 8
+			      C                    atoi text
+			      C                    mov location, ax
+			      C                 ENDM
+			      C 
+			      C inputD          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 13
+			      C                    atod text
+			      C                    mov location, eax
+			      C                 ENDM
+			      C 
+				INCLUDE sqrt.h
+			      C .NOLIST     ; turn off listing
+			      C .LIST       
+			      C 
+				;INCLUDE round.h
+
+ 00000000			.CODE
+ 00000000			_start:
+ 00000000
+				;what does the macro overwrite?
+				divide		MACRO   dividend, divisor
+				                   mov ax, dividend
+								   
+								   ;mov numer, ax
+								   ;mov denom, divisor
+				                   ;round numer, denom   ; corrected dividend is in ax
+								   ;mov ax, numer
+								   ;mov divisor, denom
+								   
+				                   cwd
+				                   idiv divisor
+								   ;where are the quotient and the remainder?
+								   
+				                   mov dividend, ax
+				                ENDM
+
+				            ; sample roots 4, -6 (using the input file numbers)
+				            inputW prompt_a, _a_   ; 7
+				            outputW _a_
+				            inputW prompt_b, _b_   ; 14
+				            outputW _b_
+				            inputW prompt_c, _c_   ; -168
+				            outputW _c_
+							
+							;cmp aa, 0 ;(what if a is zero? can't use quadratic equation)
+							;je linear
+
+ 0000013B  66| A1					mov ax, _b_
+	   00000002 R
+ 00000141  66| F7 E8					imul ax
+ 00000144  66| 8B C8					mov cx, ax
+							outputW cx ; b^2
+							
+							; cx contains b squared     
+							
+ 00000176  66| A1					mov ax, _a_
+	   00000000 R
+ 0000017C  66| BB 0004					mov bx, 4
+ 00000180  66| F7 EB					imul bx
+							outputW ax ; 4a
+							
+							; ax contains 4a (result could be negative)			
+
+ 000001B2  66| 8B 1D					mov bx, _c_
+	   00000004 R
+ 000001B9  66| F7 EB					imul bx
+							
+							; ax contains 4ac (result could be negative)			
+
+ 000001BC  66| 2B C1					sub ax, cx
+ 000001BF  66| F7 D8					neg ax
+							outputW ax ; b^2-4ac
+							
+							; ax contains the discriminant
+							
+							;cmp ax, 0  ;(what if discriminant < 0?  imaginary roots)
+							;jl complex
+
+
+				            ; the sqrt is not very accurate, so roots should be integers
+				            sqrt ax        			; get the sqrt of the discriminant (discriminant assumed to be positive)
+
+ 000001F8  66| A3		            mov  discrim, ax  	; store the square root of the discriminant (also still in ax right now)
+	   00000006 R
+							
+							outputW ax ; sqrt b^2-4ac
+							
+ 0000022D  66| 8B 1D					mov bx, _b_
+	   00000002 R
+ 00000234  66| F7 DB					neg bx
+							
+							; bx contains -b (takes the 2s complement)			
+
+ 00000237  66| 8B 0D					mov cx, _a_
+	   00000000 R
+ 0000023E  66| 03 C9					add cx, cx
+							
+							; cx contains 2a			
+
+ 00000241  66| 03 C3					add ax, bx
+ 00000244  66| A3					mov root1, ax
+	   00000008 R
+							outputW root1
+							
+							; root1 contains -b + sqrt(discrim)			
+
+ 0000027D  66| A1					mov ax, discrim
+	   00000006 R
+ 00000283  66| F7 D8					neg ax
+ 00000286  66| 03 C3					add ax, bx
+ 00000289  66| A3					mov root2, ax
+	   0000000A R
+							outputW root2
+							
+							; root2 contains -b - sqrt(discrim)			
+
+				            divide root1, cx  	; result in root1
+				            divide root2, cx  	; result in root2
+				            
+				            output answer1
+				            outputW root1
+				            output answer2
+				            outputW root2
+							
+							;jmp done
+							
+				;complex:
+							;output complex_roots
+							;jmp done
+							
+				;linear:
+							; bx + c = 0			x = -c/b
+							;mov ax, cc
+							;neg ax
+							;mov bx, bb
+							;cwd
+							;idiv bx
+							;mov root1, ax
+							
+							;output answer1
+				            ;outputW root1
+							
+				;done:
+
+				            INVOKE ExitProcess, 0
+
+ 0000036D			PUBLIC _start
+				END
+Microsoft (R) Macro Assembler Version 6.15.8803		    03/14/19 02:15:51
+quad.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atoi . . . . . . . . . . . . . .	Proc
+divide . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+inputD . . . . . . . . . . . . .	Proc
+inputW . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+itoa . . . . . . . . . . . . . .	Proc
+outputD  . . . . . . . . . . . .	Proc
+outputW  . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+sqrt . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000008B DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 0000036D DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+$$$00001 . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 0000036D Private
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
+LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+_a_  . . . . . . . . . . . . . .	Word	 00000000 _DATA	
+_b_  . . . . . . . . . . . . . .	Word	 00000002 _DATA	
+_c_  . . . . . . . . . . . . . .	Word	 00000004 _DATA	
+_start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
+answer1  . . . . . . . . . . . .	Byte	 0000002E _DATA	
+answer2  . . . . . . . . . . . .	Byte	 00000042 _DATA	
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atoiproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+carriage . . . . . . . . . . . .	Byte	 0000007B _DATA	
+complex_roots  . . . . . . . . .	Byte	 00000057 _DATA	
+denom  . . . . . . . . . . . . .	Word	 0000000E _DATA	
+discrim  . . . . . . . . . . . .	Word	 00000006 _DATA	
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+inproc . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+itoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+numer  . . . . . . . . . . . . .	Word	 0000000C _DATA	
+outproc  . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+prompt_a . . . . . . . . . . . .	Byte	 00000010 _DATA	
+prompt_b . . . . . . . . . . . .	Byte	 0000001A _DATA	
+prompt_c . . . . . . . . . . . .	Byte	 00000024 _DATA	
+root1  . . . . . . . . . . . . .	Word	 00000008 _DATA	
+root2  . . . . . . . . . . . . .	Word	 0000000A _DATA	
+sqrt_proc  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+text . . . . . . . . . . . . . .	Byte	 0000007E _DATA	
+
+	   0 Warnings
+	   0 Errors

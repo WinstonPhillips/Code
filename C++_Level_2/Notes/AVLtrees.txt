@@ -1,0 +1,21 @@
+heaps 
+
+a heap can be be more efficient than a bst because it automatically balances the tree
+
+Treaps
+	combination of binary search tree and a heap
+
+AVL Trees!!
+
+AVl: A binary search tree 
+
+	balance = height of the left subtree - height of right subtree
+	balance must be -1, 0, or 1
+
+how do we fix an unbalanced tree?
+
+Rotation! - how we fix this problem
+
+	left left rotation
+	right right rotation
+	

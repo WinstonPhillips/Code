@@ -1,0 +1,17 @@
+makefiles- compile your program for you
+		recognizes only the files that has been changed
+
+type make in cmd // just trust me
+
+make clean // will clean all the .o's and Movies.exe
+
+batch file- the less than symbol allows all imput to be entered via file
+		greater than symbol: everything gets written  to this file
+***TEXT***
+
+Text* name;
+name = new Text("llama")
+
+no longer needs a create text function
+
+name->displayText(); // because name is a pointer

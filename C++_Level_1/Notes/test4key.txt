@@ -1,0 +1,98 @@
+test 3 key // oops
+
+1. false
+2. false
+3. true
+4. true
+5. false
+6. true
+7. true
+8. true
+9. true -- cause its a constant!
+10. true
+	couting: *(myArray + i),  (*myArray + i) couts value at myArray[0] +1
+	declaring: *(myArray + i) is good for declaring
+
+
+11. D. 2 // watch the trickiness
+12. A.
+13. D. 15 is the header. 4 is the prototype
+14. D.
+15. D.
+16. B.
+17. C.
+18. C. // we dont know what address, but it does it
+int main()
+{
+  int* pointer = new int; // implies I only need 1 address allocated in heap memory
+  *pointer = 6;     // sets value at pointer[0] to 6;
+  *(pointer + 1) = 12; // sets value at 0+1 to 12
+  pointer[0] = 2;   // works as well
+  pointer[1] = 4;   // works as well
+  cout << *pointer << endl; // displays value at pointer[0]
+  cout << *(pointer + 1) << endl; // diaplays value at pointer[0+1];
+  cout << (*pointer + 1) << endl; // displays value at pointer[0] + 1;
+ 
+}
+
+19. C.
+20. C.
+
+21. stack memory
+22. address
+23. heap memory
+24. static
+25. default
+
+26. yeah
+
+27. practice // code online 
+
+#include <iostream>
+
+using namespace std;
+
+int* reverseArray(int* originalArray,int size, int*reversedArray)
+{
+  reversedArray = new int[size];
+  
+  int j= size -1;
+  
+  for (int i = 0; i < size; i++)
+  {
+    reversedArray[j] = originalArray[i];
+    j--;
+  }
+  
+  return reversedArray;
+}
+
+int main()
+{
+  
+  int size; 
+  
+  cout << "Size?";
+    cin >> size;
+  
+  int* myArray = new int[size];
+  
+  for (int i = 0; i < size; i++)
+  {
+    *(myArray + i) = i+1;
+  }
+  
+  int* reversedArray = new int[size];
+  reversedArray = reverseArray(myArray,size,reversedArray);
+  
+  for (int i = 0; i < size; i++)
+  {
+    cout << *(reversedArray+i) << endl;
+  }
+  
+  
+  
+ 
+}
+
+

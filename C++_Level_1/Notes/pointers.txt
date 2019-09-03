@@ -1,0 +1,98 @@
+Memory
+	2 types : stack memory
+		  Heap Memory
+
+	stack memory: very organized 
+			cleans up after itself
+			pretty small
+
+			everything adds up to the top, and when it's done the top is deleted (cleaned up)
+
+	
+	Heap memory: 
+		not very organized
+		very big
+		does not clean
+
+	we wanr things to be in heap, yet be organized
+
+POINTERS
+
+	char string // has 256 characters 
+				256x4 = 1024 bytes
+
+pointer- the memory address of the variable 
+		instead of holding 50, it just holds where 50 is stored 
+	
+		great because we can get to our data way way faster
+
+Example Code###########################################################################
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+  int myStates = 50;
+  int numStateCapitals = 51;  // at this point, we are still using stack memory
+  
+  cout << myStates<< endl;
+  cout << &myStates << endl; // printss out address where myState is saved
+  
+  int* numStateCapitalsPtr = &numStateCapitals;
+  int* myStatesPtr = &myStates;
+  
+  cout << numStateCapitalsPtr << endl; // prints mem address
+  
+  cout << *numStateCapitalsPtr << endl; // prints out data AT memory address
+  
+  *numStateCapitalsPtr = 55;
+  // changes the data AT the memory address to 55
+  
+  cout << numStateCapitals << endl;
+  
+  
+}
+
+########################################################################################
+
+
+Example Code 
+########################################################################################
+
+#include <iostream>
+
+using namespace std;
+
+int* resizeArray(int* oldArray, int &size) // this function return an integer pointer
+{
+  int* newArray = new int[size*2]; // new mean to stick this things in heap memory.
+  for (int i < 0; i < size; i++)
+  {
+    newArray[i] = oldArray[i];
+  } 
+  size*=2;
+  delete[] oldArray;  // deletes old arrray
+  return newArray;
+}
+
+int main()
+{
+  int array[5]= {1,2,3,4,5};
+  
+  cout << array << endl; // just prints hexadecimal address
+  
+  cout << *array << endl; // prints out first element of array
+  
+  cout << *(array+1) << endl; // prints out second element of array sub 1
+/**************************************/
+
+
+}
+
+########################################################################################
+
+
+
+

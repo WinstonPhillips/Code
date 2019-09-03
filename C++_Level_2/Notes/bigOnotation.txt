@@ -1,0 +1,34 @@
+binary and linear search
+
+number of comparisons formula: [log2N] + 1 comparisons
+	// KNOW!!
+
+Big O notation
+	
+	a mathematical way used to describe runtime (the efficiency of an algorithm)
+	
+	the more elements, the longer it will take to do different operations
+	
+	if an algorithm does a good job of not taking too much longer, it has a "slower growth rate"
+	
+	if an algorithm is way slower, it has a "higher growth rate"
+
+determining big O
+
+	formula: 1000 + 12N + 6N^2
+	
+	1000 == lines of code
+	12N == 12 operations for every operation in the list
+	6N^2 == 6 operations for every N*N item on the list
+
+step 2 of determining big O
+	
+	
+	if the function is a sum of several terms, then only keep the one with the biggest number
+	
+step 3
+	
+	now that you have only one term, remove any coefficients
+
+	Notation: O(N)
+	

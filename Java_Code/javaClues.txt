@@ -1,0 +1,14 @@
+JAVA STUFF
+
+visitor design ppattern
+
+law of demeter
+
+jpatterns
+
+
+s
+
+decorator, visitor, state, command
+
+GUI: layout manager!!!!!!

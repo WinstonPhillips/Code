@@ -1,0 +1,71 @@
+Notes csc 1310
+
+member functions exist in a class
+
+constructor: there are overloaded constructors and default constructors
+		-constructors have no return type
+			example: Dog(string,string,int) // no return type
+
+accessor functions- same as getter functions // typically has const 
+			example: string getName() const;
+
+mutator functions- setter functions. Always void.
+			example: void setName(string name);
+destructor- cleans up
+			example: Dog::~Dog();
+				// you don't need anything in your actual program defifintion
+					Dog::~Dog()
+						{
+						}
+contructors- can have a default and overloaded constructor at the same time
+
+***class implementaion*** // typically goes in a cpp file 
+
+Dog::Dog (string n, string b, int a)
+{
+name = n;
+breed  = b;
+age  = a;
+}
+
+string Dog::getName() 
+{
+	return name;
+}
+
+void Dog::setName(string name)
+{
+	Name = name;
+}
+		
+***main implementation**
+
+int main()
+{
+string dogName, dogBreed;
+int dogAge;
+  cout << "\n\n What is your dog's name?: ";
+	getline(cin,dogName);
+  cout << "\nWhat is your dog's breed?: ";
+	getline(cin, dogBreed);
+
+  cout << "What is << dogName << "'s age?: ";
+	cin >> dogAge;
+
+  Dog myDog(dogName,dogBreed,dogAge);	// because we have an overloaded function
+
+ cout << "DOG'S INFO" << endl;
+
+ cout << myDog.getName() << myDog.getBreed() << myDog.getAge() << endl;	// yes, it's messsy
+
+
+
+  
+Dog myDogs[100];
+
+myDogs[x].setName(dogName);
+myDogs[x].setAge(dogAge); etc.....
+
+
+
+

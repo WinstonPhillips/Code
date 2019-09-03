@@ -1,0 +1,40 @@
+Passing by reference
+
+	reference variable example
+
+	int x = 5;
+	int& pointer = x;	// referance variables must always be of the same type that they are pointing to
+				// if x changes, than so does pointer. if pointer changes, so does x
+
+	passing by reference can use reference variables to change variable values while not having to return
+
+	
+
+	example
+
+	void function (int x, int& temperature)
+	{
+		temperature = x + 5;	// temperature in main function is now changed. (passing by reference)
+	}
+
+	main int()
+	{
+	int temperature = 500;
+	function(10,temperature)
+	}
+
+Sometimes, programmers wish to pass by reference to simply save memory space, but have no intention of changing a value
+They then use the "const" 
+
+	example 
+
+	void function (int x, const int& temperature)
+	{
+		x = temperature;	// temperature is no just a read only value, cannot be changed
+	}
+
+	main int()
+	{
+	int temperature = 500;
+	function(10,temperature)
+	}

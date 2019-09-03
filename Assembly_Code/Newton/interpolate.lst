@@ -1,0 +1,254 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/03/19 20:19:12
+interpolate.asm						     Page 1 - 1
+
+
+
+				.386
+				.MODEL FLAT
+
+				INCLUDE debug.h
+			      C INCLUDE io.h
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+			      C 
+ = 0000000D		      C CR          EQU    0Dh   ; carriage return character
+ = 0000000A		      C LF          EQU    0Ah   ; linefeed character
+			      C 
+ 00000000		      C .DATA
+ 00000000 0D 0A 00	      C carriage    BYTE     CR, LF, 0 
+ 00000003  0000000D [	      C text        BYTE     13 DUP(?)
+	    00
+	   ]
+			      C 
+			      C outputW    	MACRO   var
+			      C                    itoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C                 ENDM
+			      C 
+			      C outputD  	MACRO  var
+			      C                    dtoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C          	ENDM
+			      C 
+			      C inputW          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 8
+			      C                    atoi text
+			      C                    mov location, ax
+			      C                 ENDM
+			      C 
+			      C inputD          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 13
+			      C                    atod text
+			      C                    mov location, eax
+			      C                 ENDM
+			      C 
+				INCLUDE float.h
+			      C .NOLIST
+			      C .LIST
+			      C 
+				INCLUDE compute_b.h
+			      C .NOLIST
+			      C .LIST
+			      C 
+
+ = [ebp+14]			array_address 	EQU 	[ebp+14]
+ = [ebp+12]				Degree		EQU  	[ebp+12]
+ = [ebp+8]				X_Coor 		EQU		[ebp+8]
+
+				PUBLIC interpolate_proc
+
+ 00000010			.data
+
+ 00000010 00000000		testNUM 				real4 ?
+ 00000014 0000			number					WORD ?
+ 00000016 20 00			string  	    		BYTE " ", 0
+ 00000018 41 6E 73 77 65	answer_prompt			BYTE "Answer is: ", 0
+	   72 20 69 73 3A
+	   20 00
+
+
+
+ 00000000			.CODE
+
+ 00000000			interpolate_proc PROC NEAR32
+
+ 00000000  55				push 	ebp 
+ 00000001  8B EC			mov 	ebp, esp
+ 00000003  51				push 	ecx
+ 00000004  50				push 	eax
+ 00000005  66| 9C			pushf		; pushing done
+
+					
+ 00000007  66| 8B 4D 0C			mov cx, Degree ; for (x-xn)
+					
+ 0000000B  D9 EE			fldz		; push zero on the floating point stack so we don't get errors with initial addition
+					
+
+ 0000000D				initial_loop:
+							
+ 0000000D  66| 49					dec cx
+							
+ 0000000F  66| 83 F9 00					cmp cx, 0
+ 00000013  7C 53					jl exit_code 	; we are done
+							
+ 00000015  66| 8B D1					mov dx, cx		; dx will be our second counter
+							
+ 00000018  D9 E8					fld1		; for our initial multiplication
+							
+ 0000001A					loop_until_b:
+							
+ 0000001A  66| 83 FA 00					cmp dx, 0
+ 0000001E  7C 30					jl get_b		; parentheses are done
+							
+						
+ 00000020  D9 45 08					fld real4 ptr X_Coor  
+							
+							
+ 00000023  8B 5D 0E					mov ebx, array_address
+ 00000026  66| B8 0000					mov ax, 0
+ 0000002A  66| B8 0008					mov ax, 8
+ 0000002E  66| 89 15					mov number, dx
+	   00000014 R
+ 00000035  66| F7 25					mul number 		;  multiply first counter by 8   
+	   00000014 R
+ 0000003C  66| 03 D8					add bx, ax
+ 0000003F  D9 03					fld real4 ptr [ebx]  ; load x_n into floating point stack
+ 00000041  66| 8B 15					mov dx, number	; to get our dx (counter back), gets overwritten 
+	   00000014 R
+								
+ 00000048  DE E9					fsub ; x - x_n
+					
+ 0000004A  66| 4A					dec dx		; decrement counter
+							
+ 0000004C  DE C9					fmul		; multiply
+							
+ 0000004E  EB CA					jmp loop_until_b
+							
+ 00000050					get_b:
+							
+ 00000050  66| 41					inc 	cx	; cx is now our degree we are going to send
+							compute_b dword ptr array_address, cx, word ptr 0   ; the b value is now on the floatkng point stack
+ 00000060  66| 49					dec 	cx	;cx back to normal for counter
+							
+							
+ 00000062  DE C9					fmul	; bn * ()()()
+							
+ 00000064  DE C1					fadd	; add to previous calculation
+							
+ 00000066  EB A5					jmp 	initial_loop
+
+
+
+ 00000068			exit_code:
+					
+					output answer_prompt ; prompt for our answer
+					compute_b array_address, word ptr 0, word ptr 0 ; for final b zero addition
+ 00000086  DE C1			fadd
+					
+					
+ 00000088  D9 15 00000010 R		fst testNUM
+					ftoa testNUM, word ptr 7, word ptr 10, string
+					output string
+					
+					output carriage
+					
+
+ 000000C6  58				pop 	eax
+ 000000C7  59				pop 	ecx
+ 000000C8  66| 9D			popf
+ 000000CA  8B E5			mov 	esp, ebp
+ 000000CC  5D				pop 	ebp
+ 000000CD  C2 000A			ret 	10
+					
+ 000000D0			interpolate_proc ENDP
+
+				END
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/03/19 20:19:12
+interpolate.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atof . . . . . . . . . . . . . .	Proc
+atoi . . . . . . . . . . . . . .	Proc
+compute_b  . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+ftoa . . . . . . . . . . . . . .	Proc
+inputD . . . . . . . . . . . . .	Proc
+inputW . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+itoa . . . . . . . . . . . . . .	Proc
+outputD  . . . . . . . . . . . .	Proc
+outputW  . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000024 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000D0 DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+interpolate_proc . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000D0 Public
+  initial_loop . . . . . . . . .	L Near	 0000000D _TEXT	
+  loop_until_b . . . . . . . . .	L Near	 0000001A _TEXT	
+  get_b  . . . . . . . . . . . .	L Near	 00000050 _TEXT	
+  exit_code  . . . . . . . . . .	L Near	 00000068 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
+Degree . . . . . . . . . . . . .	Text   	 [ebp+12]
+LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+X_Coor . . . . . . . . . . . . .	Text   	 [ebp+8]
+answer_prompt  . . . . . . . . .	Byte	 00000018 _DATA	
+array_address  . . . . . . . . .	Text   	 [ebp+14]
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atof_proc  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atoiproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+carriage . . . . . . . . . . . .	Byte	 00000000 _DATA	
+compute_b_proc . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+ftoa_proc  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+inproc . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+itoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+number . . . . . . . . . . . . .	Word	 00000014 _DATA	
+outproc  . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+string . . . . . . . . . . . . .	Byte	 00000016 _DATA	
+testNUM  . . . . . . . . . . . .	DWord	 00000010 _DATA	
+text . . . . . . . . . . . . . .	Byte	 00000003 _DATA	
+
+	   0 Warnings
+	   0 Errors

@@ -1,0 +1,7 @@
+More AVL trees
+
+	more rotations
+
+	balancing: height of left - height of right
+
+	example code: balance(TreeNode*) callse the individual private rotation functions

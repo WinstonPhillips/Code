@@ -1,0 +1,72 @@
+Structs
+
+	ADT: abstract data type - a data type that the coder has created
+				  - you just have to tell that adt what kind of data you are storing at the adt and how they can store and manipulate that data
+	struct: entry level, abstract data type holder
+example:
+	
+////////////////////////Student.cpp\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+#include<iostream>
+#include<string>
+
+using namespace std;
+
+struct Student  
+{
+string Name;
+float GPA;
+int year;
+string Address;
+string Major;
+string Tnumber;
+};
+
+Student* createStudent(string name, float gpa, int year, string addr, string major, string Tnum)
+{
+  Student* newStudent = new Student; // of type student, our adt // gets 40 bytes of memory for the array
+  newStudent -> Name = name; // arrow: *newStudent.Name = name // information at newStudent.Name = to the string name 
+  newStudent -> GPA = gpa;
+  newStudent -> Year = year;
+  newStudent -> Address = addr;
+  newStudent -> Major = major;
+  newStudent -> Tnumber = Tnum;
+  
+  return newStudent;
+  
+}
+
+void displayStudent(Student* s) // passing around a pointer to student, takes up way less memory
+{
+  cout << "Name: " << s->Name << endl;
+  cout << "GPA: " << s->GPA << endl;
+  // so on and so forth
+}
+
+void destroyStudent(Student* s) // destroy the student // passing around a variable of type Student, naming it s
+{
+  delete s; // only dealing with one student
+}
+
+
+
+///////////////////////////////StudentDriver.cpp\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+#include <iostream>
+
+int main()
+{
+  Student* s1 = createStudent("Billy", 3.5, 2, "1313 Buttcrack Pike", "Computer Science", "T5554444")
+  
+  Student* s2 = createStudent("Antuan", 2.2, 3, "jasmine ct", "Electrical Engineering", "T2223345")
+  
+    displayStudent(s2);
+    displayStudent(s1);
+    
+    destroyStudent(s2);
+    destroystudent(s1);
+}
+
+
+	
+	
+		  

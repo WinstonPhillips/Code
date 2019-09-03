@@ -1,0 +1,16 @@
+Functions 3
+
+	sending a 2 dimensional array: first dimension you may leave blank, the rest you have to fill in in the function parameters
+	
+	Functions are automatically changed when sent to another function
+
+Sorts
+
+	Bubble Sort- Brute Force Algorithms(searches)
+		painfully slow, yet thhorough
+
+	selection sort- brute force algorthm(search)
+	
+		
+	
+	

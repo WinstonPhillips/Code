@@ -1,0 +1,10 @@
+model - responsible for obtaining and manipulating data
+
+
+controller - can request data from the model
+	     updates the view
+
+View - view of the application
+	the user Interface
+
+

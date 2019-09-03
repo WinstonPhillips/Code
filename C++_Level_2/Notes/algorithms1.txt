@@ -1,0 +1,22 @@
+Searching algorthms
+
+algorithm- a sequence of steps for accomplishing a task
+
+		a search algorithm is a method of locating a specific item in a larger collection of data
+
+
+linear search algorithm- uses a loop to sequentially step through each piece of data (one at a time)
+	pretty straightforward
+	
+	advantage: simple, easy to understand 
+			array doesn't have to be in order
+	disadvantage: SLLOOOOWWWWW
+
+binary search algorithm
+	instead of testing data starting from the beginning, we start from the middle
+
+	if middle element > desired element, we look at second half of list
+
+	if middle element < desired element , we look at the first half of the array
+
+	keep doing this until we get to our number

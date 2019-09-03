@@ -1,0 +1,251 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/03/19 20:19:12
+compute_b.asm						     Page 1 - 1
+
+
+				;for our recursion to compute b
+				.386
+				.MODEL FLAT
+
+				INCLUDE debug.h
+			      C INCLUDE io.h
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+			      C 
+ = 0000000D		      C CR          EQU    0Dh   ; carriage return character
+ = 0000000A		      C LF          EQU    0Ah   ; linefeed character
+			      C 
+ 00000000		      C .DATA
+ 00000000 0D 0A 00	      C carriage    BYTE     CR, LF, 0 
+ 00000003  0000000D [	      C text        BYTE     13 DUP(?)
+	    00
+	   ]
+			      C 
+			      C outputW    	MACRO   var
+			      C                    itoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C                 ENDM
+			      C 
+			      C outputD  	MACRO  var
+			      C                    dtoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C          	ENDM
+			      C 
+			      C inputW          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 8
+			      C                    atoi text
+			      C                    mov location, ax
+			      C                 ENDM
+			      C 
+			      C inputD          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 13
+			      C                    atod text
+			      C                    mov location, eax
+			      C                 ENDM
+			      C 
+				INCLUDE float.h
+			      C .NOLIST
+			      C .LIST
+			      C 
+					
+ = [ebp+12]				address EQU [ebp+12]
+ = [ebp+10]				n 		EQU [ebp+10]
+ = [ebp+8]				m	    EQU [ebp+8]
+					
+					
+					
+				PUBLIC compute_b_proc
+
+ 00000010			.DATA
+
+
+ 00000000			.CODE
+				          
+ 00000000			compute_b_proc PROC NEAR32
+					
+					
+ 00000000  55				push 	ebp 
+
+ 00000001  8B EC			mov 	ebp, esp
+					
+ 00000003  52				push 	edx
+ 00000004  51				push 	ecx	
+ 00000005  50				push 	eax  
+ 00000006  66| 9C			pushf	; pushing done
+					
+					
+ 00000008  66| 8B 4D 0A			mov 	cx, n
+ 0000000C  66| 8B 55 08			mov 	dx, m
+ 00000010  66| 3B D1			cmp		dx, cx
+ 00000013  74 70			je 		m_n_equal	; m and n are equal : BASE CASE
+					
+ 00000015  66| 8B 4D 08			mov 	cx, m
+ 00000019  66| 83 C1 01			add		cx, 1	; add 1 to m
+ 0000001D  66| 8B 55 0A			mov 	dx, n
+ 00000021  FF 75 0C			pushd 	address
+ 00000024  66| 52			push	dx
+ 00000026  66| 51			push 	cx
+ 00000028  E8 FFFFFFD3			call 	compute_b_proc
+					
+ 0000002D  66| 8B 55 0A			mov 	dx, n
+ 00000031  66| 4A			dec 	dx
+ 00000033  66| 8B 4D 08			mov 	cx, m
+ 00000037  FF 75 0C			pushd 	address
+ 0000003A  66| 52			push 	dx		;push n-1
+ 0000003C  66| 51			push 	cx		; push m
+ 0000003E  E8 FFFFFFBD			call	compute_b_proc
+					
+ 00000043  DE E9			fsub
+					
+
+ 00000045			x_n:
+
+ 00000045  B8 00000000			mov eax, 0
+ 0000004A  BA 00000000			mov edx, 0
+					
+ 0000004F  8B 5D 0C			mov 	ebx, address
+ 00000052  66| 8B 45 0A			mov 	ax, n
+ 00000056  66| BA 0008			mov 	dx, 8
+ 0000005A  66| F7 E2			mul		dx			; to get to x value
+ 0000005D  66| 03 D8			add		bx, ax		
+					
+ 00000060  D9 03			fld 	real4 ptr [ebx] 
+					
+					
+ 00000062			x_m:
+
+ 00000062  B8 00000000			mov eax, 0
+ 00000067  BA 00000000			mov edx, 0
+					
+ 0000006C  8B 5D 0C			mov 	ebx, address
+ 0000006F  66| 8B 45 08			mov 	ax, m
+ 00000073  66| BA 0008			mov 	dx, 8
+ 00000077  66| F7 E2			mul		dx			; to get to x value
+ 0000007A  66| 03 D8			add		bx, ax
+					
+ 0000007D  D9 03			fld 	real4 ptr [ebx]
+					
+					
+ 0000007F			x_n_minus_x_m:
+
+ 0000007F  DE E9			fsub		; now on floating point stack
+ 00000081  DE F9			fdiv		; FINAL COMPUTATION
+					
+					
+ 00000083  EB 21			jmp		exit_code
+					
+					
+ 00000085			m_n_equal:
+
+ 00000085  8B 5D 0C			mov 	ebx, address
+ 00000088  B8 00000000			mov 	eax, 0
+ 0000008D  BA 00000000			mov 	edx, 0
+ 00000092  66| 8B 45 0A			mov 	ax, n
+ 00000096  66| BA 0008			mov 	dx, 8
+ 0000009A  66| F7 E2			mul		dx	
+ 0000009D  66| 83 C0 04			add 	ax, 4
+ 000000A1  66| 03 D8			add 	bx, ax
+					
+ 000000A4  D9 03			fld 	real4 ptr [ebx]	; xn in  x(0)
+					
+					
+						
+ 000000A6			exit_code:
+							
+ 000000A6  66| 9D					popf
+ 000000A8  58						pop eax
+ 000000A9  59						pop ecx
+ 000000AA  5A						pop edx
+ 000000AB  8B E5					mov esp, ebp
+ 000000AD  5D						pop ebp
+ 000000AE  C2 0008					ret 8
+						
+					
+					
+						
+ 000000B1			compute_b_proc ENDP
+
+				END
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/03/19 20:19:12
+compute_b.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atof . . . . . . . . . . . . . .	Proc
+atoi . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+ftoa . . . . . . . . . . . . . .	Proc
+inputD . . . . . . . . . . . . .	Proc
+inputW . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+itoa . . . . . . . . . . . . . .	Proc
+outputD  . . . . . . . . . . . .	Proc
+outputW  . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000010 DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000B1 DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+compute_b_proc . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000B1 Public
+  x_n  . . . . . . . . . . . . .	L Near	 00000045 _TEXT	
+  x_m  . . . . . . . . . . . . .	L Near	 00000062 _TEXT	
+  x_n_minus_x_m  . . . . . . . .	L Near	 0000007F _TEXT	
+  m_n_equal  . . . . . . . . . .	L Near	 00000085 _TEXT	
+  exit_code  . . . . . . . . . .	L Near	 000000A6 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
+LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+address  . . . . . . . . . . . .	Text   	 [ebp+12]
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atof_proc  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atoiproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+carriage . . . . . . . . . . . .	Byte	 00000000 _DATA	
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+ftoa_proc  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+inproc . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+itoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+m  . . . . . . . . . . . . . . .	Text   	 [ebp+8]
+n  . . . . . . . . . . . . . . .	Text   	 [ebp+10]
+outproc  . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+text . . . . . . . . . . . . . .	Byte	 00000003 _DATA	
+
+	   0 Warnings
+	   0 Errors

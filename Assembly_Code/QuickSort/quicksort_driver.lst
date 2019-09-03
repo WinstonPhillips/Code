@@ -1,0 +1,225 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/19/19 13:43:38
+quicksort_driver.asm					     Page 1 - 1
+
+
+				; Written by: Winston Phillips T00212039 ;
+
+				.386
+
+				.MODEL FLAT
+
+				ExitProcess PROTO NEAR32 stdcall, dwExitCode:DWORD
+
+				.STACK  4096            ; reserve 4096-byte stack
+
+ = 0000000E			MAXLEN 			  EQU DWORD ptr 14; Easy access for Boshart
+
+ 00000000			.DATA
+
+ 00000000 00000000		numWords 		  DWORD 0		; total number of words
+
+ 00000004  00000578 [		giantText 		  BYTE 1400 DUP(?)  ; giant array to contain text
+	    00
+	   ]
+
+ 0000057C  0000000E [		inputString 	  BYTE MAXLEN DUP(?)
+	    00
+	   ]
+
+ 0000058A 78 00			xString 		  BYTE "x", 0    ; for input strings
+
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+				INCLUDE debug.h			; for outputW macro
+			      C INCLUDE io.h
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+			      C 
+ = 0000000D		      C CR          EQU    0Dh   ; carriage return character
+ = 0000000A		      C LF          EQU    0Ah   ; linefeed character
+			      C 
+ 0000058C		      C .DATA
+ 0000058C 0D 0A 00	      C carriage    BYTE     CR, LF, 0 
+ 0000058F  0000000D [	      C text        BYTE     13 DUP(?)
+	    00
+	   ]
+			      C 
+			      C outputW    	MACRO   var
+			      C                    itoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C                 ENDM
+			      C 
+			      C outputD  	MACRO  var
+			      C                    dtoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C          	ENDM
+			      C 
+			      C inputW          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 8
+			      C                    atoi text
+			      C                    mov location, ax
+			      C                 ENDM
+			      C 
+			      C inputD          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 13
+			      C                    atod text
+			      C                    mov location, eax
+			      C                 ENDM
+			      C 
+				INCLUDE str_utils.h		; for string util Macros
+			      C .NOLIST
+			      C .LIST
+			      C 
+				INCLUDE quicksort.h
+			      C .NOLIST
+			      C .LIST
+			      C 
+
+ 00000000			.CODE
+ 00000000			_start:
+
+ 00000000			input_loop:
+ 00000000
+					input 		inputString, MAXLEN
+
+					compare 	inputString, xString
+ 00000029  66| 83 F8 00			cmp 		ax, 0
+ 0000002D  74 1D			je 			finish
+					
+					append 		inputString, giantText
+					
+ 00000044  FF 05 00000000 R		inc 		numWords		
+					
+ 0000004A  EB B4			jmp 		input_loop
+					
+
+					
+ 0000004C			finish:
+					
+					output giantText
+					
+					
+					quicksort_macro giantText, numWords,  MAXLEN
+					output carriage
+					output carriage
+					output carriage
+					
+					output giantText
+					
+					
+				INVOKE  ExitProcess, 0
+					
+ 000000AE			PUBLIC _start
+
+				END
+Microsoft (R) Macro Assembler Version 6.15.8803		    04/19/19 13:43:38
+quicksort_driver.asm					     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+append . . . . . . . . . . . . .	Proc
+atod . . . . . . . . . . . . . .	Proc
+atoi . . . . . . . . . . . . . .	Proc
+compare  . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+equals_ignore_case . . . . . . .	Proc
+equals . . . . . . . . . . . . .	Proc
+index_of . . . . . . . . . . . .	Proc
+inputD . . . . . . . . . . . . .	Proc
+inputW . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+itoa . . . . . . . . . . . . . .	Proc
+outputD  . . . . . . . . . . . .	Proc
+outputW  . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+quicksort_macro  . . . . . . . .	Proc
+replace  . . . . . . . . . . . .	Proc
+strcopy  . . . . . . . . . . . .	Proc
+strlen . . . . . . . . . . . . .	Proc
+substring  . . . . . . . . . . .	Proc
+to_lower . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000059C DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000AE DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+$$$00001 . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000AE Private
+  finish . . . . . . . . . . . .	L Near	 0000004C _TEXT	
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
+LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+MAXLEN . . . . . . . . . . . . .	DWord 	 0000000Eh   
+_start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
+append_proc  . . . . . . . . . .	L Near	 00000000 FLAT	External
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atoiproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+carriage . . . . . . . . . . . .	Byte	 0000058C _DATA	
+compare_proc . . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+equals_ignore_case_proc  . . . .	L Near	 00000000 FLAT	External
+equals_proc  . . . . . . . . . .	L Near	 00000000 FLAT	External
+finish . . . . . . . . . . . . .	L Near	 0000004C _TEXT	
+giantText  . . . . . . . . . . .	Byte	 00000004 _DATA	
+indexof_proc . . . . . . . . . .	L Near	 00000000 FLAT	External
+inproc . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+inputString  . . . . . . . . . .	Byte	 0000057C _DATA	
+input_loop . . . . . . . . . . .	L Near	 00000000 _TEXT	
+itoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+numWords . . . . . . . . . . . .	DWord	 00000000 _DATA	
+outproc  . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+quicksort_start_proc . . . . . .	L Near	 00000000 FLAT	External
+replace_proc . . . . . . . . . .	L Near	 00000000 FLAT	External
+strcopy_proc . . . . . . . . . .	L Near	 00000000 FLAT	External
+strlen_proc  . . . . . . . . . .	L Near	 00000000 FLAT	External
+substring_proc . . . . . . . . .	L Near	 00000000 FLAT	External
+text . . . . . . . . . . . . . .	Byte	 0000058F _DATA	
+tolower_proc . . . . . . . . . .	L Near	 00000000 FLAT	External
+xString  . . . . . . . . . . . .	Byte	 0000058A _DATA	
+
+	   0 Warnings
+	   0 Errors

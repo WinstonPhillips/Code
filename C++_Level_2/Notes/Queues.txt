@@ -1,0 +1,33 @@
+Queues
+
+has a libraray: #include <queue>
+
+declaring: queue<string> myQueue;
+
+in Arrays:
+
+will have a head and a tail node
+
+first in, first out data type
+
+acts much like an array
+	
+the head and rear, however,  are indexes of the array that hold the first and last items
+
+so, each time you add something, tail = tail +1
+	initially start it off with tail = -1 in constructor
+	
+in linked lists:
+
+	too easy
+	just use common sense
+
+myQueue.front() --- returns the front of the queue(first node entered)
+
+myQueue.pop() --- removes/pulls first item of the list(first node entered)
+
+myQueue.back(): accesses the node at the back of the queue (last node entered)
+
+
+
+

@@ -1,0 +1,686 @@
+Microsoft (R) Macro Assembler Version 6.15.8803		    03/18/19 10:31:05
+vankins.asm						     Page 1 - 1
+
+
+				; Written by: Winston Phillips T00212039 ;
+
+				.386
+
+				.MODEL FLAT
+
+				ExitProcess PROTO NEAR32 stdcall, dwExitCode:DWORD
+
+				.STACK  4096            ; reserve 4096-byte stack
+
+
+ 00000000			.DATA
+
+ 00000000 0000			ROWS 			WORD ?  ; Number of Rows 
+
+ 00000002 0000			COLS 			WORD ? ; Number of Cols
+
+ 00000004 0000			row 			WORD ?	; singular row for loops
+
+ 00000006 0000			col 			WORD ?	; singular col	for loops
+
+ 00000008 0000			ITERATION 		WORD ? 	; for loops
+
+ 0000000A 0000			COUNTER 		WORD ? 	; COLS x ROWS 
+
+ 0000000C 0000			NumToGet 		WORD ? ; for getElement MACRO
+
+ 0000000E 0000			NumToPlace 		WORD ? ; for setElement MACRO
+
+ 00000010  000001F4 [		MATRIX  		WORD 500 DUP(?)	; matrix for initial ouptut
+	    0000
+	   ]
+
+ 000003F8  000001F4 [		SOL_MATRIX 		WORD 500 DUP(?) 	; solution matrix
+	    0000
+	   ]
+
+ 000007E0 0000			solMatrixNumRight WORD ? ; for solution matrix loops
+
+ 000007E2 0000			solMatrixNumDown  WORD ? ; for solution matrix loops
+
+ 000007E4 0000			regMatrixNum 	  WORD ? ; for solution matrix loops
+
+ 000007E6 0000			loc 			  WORD ? ; for solution matrix loops
+
+ 000007E8 20 00			prompt3 		  BYTE 	" ", 0 ; for setting elements in MATRIX
+
+ 000007EA  0000000D [		testText 		  BYTE 13  DUP(?) 	; might have to use to get a good looking matrix
+	    00
+	   ]
+
+ 000007F7 72 00			r 				  BYTE "r", 0		; to display r in our path
+
+ 000007F9 64 00			d 				  BYTE "d", 0		; to display d in our path
+
+
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+				INCLUDE debug.h			; for outputW macro
+			      C INCLUDE io.h
+			      C ; IO.H -- header file for I/O macros
+			      C ; 32-bit version for flat memory model
+			      C ; R. Detmer   last revised 8/2000
+			      C .NOLIST     ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+			      C 
+ = 0000000D		      C CR          EQU    0Dh   ; carriage return character
+ = 0000000A		      C LF          EQU    0Ah   ; linefeed character
+			      C 
+ 000007FB		      C .DATA
+ 000007FB 0D 0A 00	      C carriage    BYTE     CR, LF, 0 
+ 000007FE  0000000D [	      C text        BYTE     13 DUP(?)
+	    00
+	   ]
+			      C 
+			      C outputW    	MACRO   var
+			      C                    itoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C                 ENDM
+			      C 
+			      C outputD  	MACRO  var
+			      C                    dtoa text, var
+			      C                    output text
+			      C                    output carriage
+			      C          	ENDM
+			      C 
+			      C inputW          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 8
+			      C                    atoi text
+			      C                    mov location, ax
+			      C                 ENDM
+			      C 
+			      C inputD          MACRO  prompt, location
+			      C                    output prompt
+			      C                    input text, 13
+			      C                    atod text
+			      C                    mov location, eax
+			      C                 ENDM
+			      C 
+
+
+ 00000000			.CODE
+ 00000000			_start: 
+ 00000000			;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				setMatrixFromInput MACRO 	matrix_addr, loc
+
+					mov 	[ebx], loc
+
+						
+
+						ENDM
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				getElement MACRO  matrix_addr, row, col, loc
+
+					mov 	dx, row
+					sub 	dx, 1
+					
+					mov 	ax, COLS
+					
+					mul 	dx		; multiplies row by total numbe rof COLS and stores result in ax
+					
+					mov 	dx, col
+					sub 	dx, 1
+					add 	ax, dx		; We now have our index number
+					
+					add ax, ax			; same as multiplying by 2
+						
+					add bx, ax		; get to the index that we need through ebx
+					
+					mov dx, [ebx]		; to avoid memory-to-memory reference, puts the number of the index into dx
+					
+					mov loc, dx			; puts dx into loc 
+					
+					
+						ENDM
+
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+				setElement MACRO  matrix_addr, row, col, loc
+
+					
+					mov 	dx, row
+					sub 	dx, 1
+					
+					mov 	ax, COLS
+					
+					mul 	dx		; multiplies row by total numbe rof COLS and stores result in ax
+					
+					mov		dx, col
+					sub 	dx, 1
+					add 	ax, dx		; adds call to (row-1) x COLS
+					
+					
+					add ax, ax			; same as multiplying by 2
+					
+					add bx, ax		; get to the index that we need through ebx
+					
+					mov dx, loc		;place our Number to Set in the Solutions array
+					
+					mov [ebx], dx
+					
+
+							ENDM
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+						
+					inputW prompt3, ROWS 	;obtains rows 
+						;outputW ROWS
+						
+					inputW prompt3, COLS	; obtains columns
+						;outputW COLS
+						
+ 0000006C  66| A1			mov 		ax, ROWS
+	   00000000 R
+					
+ 00000072  66| 8B 15			mov 		dx, COLS
+	   00000002 R
+						
+ 00000079  66| F7 E2			mul 		dx			; should get ROWS x COLS
+					
+ 0000007C  66| A3			mov 		COUNTER, ax
+	   0000000A R
+					
+ 00000082  66| B9 0000			mov 		cx, 0 		; counter for our loop
+					
+ 00000086  8D 1D 00000010 R		lea 		ebx, MATRIX
+					
+					
+ 0000008C			set_array_elements_loop:
+
+					
+					inputW prompt3, ax		; get input from user/text file and place it into ax 
+					
+					
+					setMatrixFromInput ebx, ax
+					
+ 000000C2  83 C3 02			add 		ebx, 2		; for our next loop, add 2 because we are dealing with words
+
+ 000000C5  66| 41			inc			cx			; increment our ecx counter
+					
+ 000000C7  66| 3B 0D			cmp 		cx, COUNTER ; compare our counter until equel to ROWS x COLS
+	   0000000A R
+					
+ 000000CE  7C BC			jl			set_array_elements_loop
+					
+
+				;;;;;;;;;;;;;;;;;;; CLEAN OUTPUT IN MATRIX FORM ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+ 000000D0  8D 1D 00000010 R		lea 		ebx, MATRIX		; for below test
+ 000000D6  66| B9 0000			mov 		cx, 0			; for overall comparison (ROWS x COLS) for clean output
+
+					output carriage				; go ahead and move to the next line
+					
+					
+ 000000E8			output_loop_1:  	
+
+ 000000E8  66| 8B 15			mov dx, col
+	   00000006 R
+					
+ 000000EF  66| 3B 15			cmp 		dx, COLS
+	   00000002 R
+					
+ 000000F6  75 17			jne 		regularOuput
+					
+ 000000F8  66| C7 05			mov 		col, 0
+	   00000006 R
+	   0000
+					
+					output carriage
+					
+ 0000010F				regularOuput:
+					
+ 0000010F  66| 8B 13				mov 		dx, [ebx]	; my problem
+						
+						itoa 		testText, dx  
+						
+						output		testText
+						
+ 00000133  83 C3 02				add 		ebx, 2
+						
+ 00000136  66| FF 05				inc 		col
+	   00000006 R
+						
+ 0000013D  66| 41				inc 		cx
+						
+ 0000013F  66| 3B 0D				cmp 		cx, COUNTER 	; are we at ROWS x COLS ?
+	   0000000A R
+						
+ 00000146  7C A0				jl 			output_loop_1
+						
+						output 		carriage
+					
+				;;;;;;;;;;;;;;;;;;;;;;;;place last element of MATRIX into SOL_MATRIX;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+ 00000156  66| 8B 15			mov 		dx, COLS		
+	   00000002 R
+ 0000015D  66| A1			mov 		ax, ROWS
+	   00000000 R
+ 00000163  66| 89 15			mov 		col, dx
+	   00000006 R
+ 0000016A  66| A3			mov 		row, ax
+	   00000004 R
+ 00000170  8D 1D 00000010 R		lea 		ebx, MATRIX
+					
+					getElement	ebx, row, col, NumToGet
+					
+ 000001A8  66| A1			mov 		ax, NumToGet
+	   0000000C R
+ 000001AE  66| A3			mov 		NumToPlace, ax
+	   0000000E R
+					
+ 000001B4  66| 8B 15			mov 		dx, COLS		; place last element of MATRIX into SOL_MATRIX	
+	   00000002 R
+ 000001BB  66| A1			mov 		ax, ROWS
+	   00000000 R
+ 000001C1  66| 89 15			mov 		col, dx
+	   00000006 R
+ 000001C8  66| A3			mov 		row, ax
+	   00000004 R
+ 000001CE  8D 1D 000003F8 R		lea 		ebx, SOL_MATRIX
+					
+					setElement	ebx, row, col, NumToPlace		; the copying to last index is done
+						
+				;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+					
+ 00000206  66| A1			mov 		ax, ROWS	; we are starting at the bottom left corner of the matrix
+	   00000000 R
+ 0000020C  66| A3			mov			row, ax                  
+	   00000004 R
+ 00000212  66| A1			mov 		ax, COLS
+	   00000002 R
+ 00000218  66| A3			mov 		col, ax
+	   00000006 R
+					
+					
+ 0000021E  66| C7 05			mov ITERATION, 0
+	   00000008 R
+	   0000
+					
+					
+					
+ 00000227			solution_matrix_loop:
+
+ 00000227  66| 8B 1D				mov bx, COUNTER
+	   0000000A R
+ 0000022E  66| 39 1D				cmp ITERATION, bx
+	   00000008 R
+ 00000235  0F 84 000001A3			je done_2
+						
+						
+ 0000023B  8D 1D 00000010 R			lea ebx, MATRIX
+						
+						getElement ebx, row, col, regMatrixNum		; we are fetching last element of our regular Matrix
+						
+ 00000273  66| 8B 0D				mov cx, col
+	   00000006 R
+ 0000027A  66| 83 C1 01				add cx, 1			; to go right
+						
+ 0000027E  66| 3B 0D				cmp cx, COLS
+	   00000002 R
+ 00000285  7F 36				jg make_solMatrixNumRight_Zero
+						
+ 00000287  8D 1D 000003F8 R			lea ebx, SOL_MATRIX
+						
+						getElement ebx, row, cx, solMatrixNumRight	; obtain the number to the right on the solution's matrix
+ 000002BB  EB 09					jmp continue	; to avoid below label
+						
+ 000002BD					make_solMatrixNumRight_Zero:
+								
+ 000002BD  66| C7 05						mov solMatrixNumRight, 0
+	   000007E0 R
+	   0000
+								
+								
+ 000002C6					continue:
+ 000002C6  66| 8B 0D				mov cx, row
+	   00000004 R
+ 000002CD  66| 83 C1 01				add cx, 1
+						
+ 000002D1  8D 1D 000003F8 R			lea ebx, SOL_MATRIX
+						
+						getElement	ebx, cx, col, solMatrixNumDown	; obtain the number below the solution's matrix
+						
+ 00000305  66| A1				mov ax, regMatrixNum
+	   000007E4 R
+						
+ 0000030B  66| 01 05				add solMatrixNumRight, ax
+	   000007E0 R
+ 00000312  66| 01 05				add solMatrixNumDown, ax
+	   000007E2 R
+ 00000319  66| A1				mov ax, solMatrixNumRight		; a load into ax for comparison purposes
+	   000007E0 R
+						
+ 0000031F  66| 39 05				cmp solMatrixNumDown, ax
+	   000007E2 R
+ 00000326  7F 48				jg	addFromDown
+						
+ 00000328					addFromRight:
+								
+ 00000328  8D 1D 000003F8 R					lea ebx, SOL_MATRIX
+								
+								setElement ebx, row, col, solMatrixNumRight
+								
+ 00000360  66| FF 05						inc ITERATION
+	   00000008 R
+								
+ 00000367  66| FF 0D						dec col
+	   00000006 R
+						
+ 0000036E  EB 46						jmp Check_Column
+						
+ 00000370					addFromDown:
+						
+ 00000370  8D 1D 000003F8 R					lea ebx, SOL_MATRIX
+								
+								setElement ebx, row, col, solMatrixNumDown
+								
+ 000003A8  66| FF 05						inc ITERATION
+	   00000008 R
+								
+ 000003AF  66| FF 0D						dec col
+	   00000006 R
+								
+						
+ 000003B6					Check_Column:
+							
+ 000003B6  66| 83 3D						cmp col, 0
+	   00000006 R 00
+ 000003BE  0F 8F FFFFFE63					jg solution_matrix_loop
+ 000003C4  66| 8B 1D						mov bx, COLS 
+	   00000002 R
+ 000003CB  66| 89 1D						mov col, bx
+	   00000006 R
+ 000003D2  66| FF 0D						dec row
+	   00000004 R
+ 000003D9  E9 FFFFFE49						jmp solution_matrix_loop
+								
+								
+								
+								
+								
+						
+ 000003DE			done_2:			; 	to display the solutions matrix
+
+						
+ 000003DE  8D 1D 000003F8 R		lea 		ebx, SOL_MATRIX	; for below output
+ 000003E4  66| B9 0000			mov 		cx, 0			; for overall comparison (ROWS x COLS) for clean output
+
+
+					output carriage				; go ahead and move to the next line
+					
+					
+
+ 000003F6			output_loop_2:  	
+
+ 000003F6  66| 8B 15			mov 		dx, col
+	   00000006 R
+					
+ 000003FD  66| 3B 15			cmp 		dx, COLS
+	   00000002 R
+					
+ 00000404  75 17			jne 		solutionsOutput
+					
+ 00000406  66| C7 05			mov 		col, 0
+	   00000006 R
+	   0000
+					
+					output carriage
+					
+ 0000041D				solutionsOutput:
+					
+ 0000041D  66| 8B 13				mov 		dx, [ebx]	; my problem
+						
+						itoa 		testText, dx  
+						
+						output		testText
+						
+ 00000441  83 C3 02				add 		ebx, 2
+						
+ 00000444  66| FF 05				inc 		col
+	   00000006 R
+						
+ 0000044B  66| 41				inc 		cx
+						
+ 0000044D  66| 3B 0D				cmp 		cx, COUNTER 	; are we at ROWS x COLS ?
+	   0000000A R
+						
+ 00000454  7C A0				jl 			output_loop_2
+						
+						
+					output carriage	
+					output carriage
+ 00000472  66| C7 05			mov row, 1			; starting in row 1, column 1
+	   00000004 R
+	   0001
+ 0000047B  66| C7 05			mov col, 1
+	   00000006 R
+	   0001
+					
+ 00000484			path_loop:
+
+ 00000484  66| 8B 1D			mov bx, row
+	   00000004 R
+ 0000048B  66| 3B 1D			cmp bx, ROWS
+	   00000000 R
+ 00000492  0F 8F 00000104		jg 	done_3		; our rows are okay
+					
+ 00000498  66| 8B 1D			mov bx, col
+	   00000006 R
+ 0000049F  66| 3B 1D			cmp bx, COLS
+	   00000002 R
+ 000004A6  0F 8F 000000F0		jg 	done_3
+					
+					
+ 000004AC  8D 1D 000003F8 R		lea ebx, SOL_MATRIX
+ 000004B2  66| 8B 0D			mov cx, col
+	   00000006 R
+ 000004B9  66| 41			inc cx
+					getElement ebx, row, cx, solMatrixNumRight	; obtain the number to the right
+					
+ 000004E9  66| 8B 1D			mov bx, COLS		; we need to compare our current column with overall cols, to make sure the number to the right may be zero
+	   00000002 R
+ 000004F0  66| 39 1D			cmp col, bx
+	   00000006 R
+ 000004F7  7C 09			jl continueToRows
+ 000004F9  66| C7 05			mov solMatrixNumRight, 0	; our column = COLS, meaning it should be zero
+	   000007E0 R
+	   0000
+					
+					
+ 00000502				continueToRows:
+ 00000502  8D 1D 000003F8 R		lea ebx, SOL_MATRIX
+ 00000508  66| 8B 0D			mov cx, row
+	   00000004 R
+ 0000050F  66| 41			inc cx
+					getElement ebx, cx, col, solMatrixNumDown	; obtain the number below
+					
+ 0000053F  66| 8B 1D			mov bx, ROWS		; we need to compare our current row with overall ROWS, to make sure the number below may be zero
+	   00000000 R
+ 00000546  66| 39 1D			cmp row, bx
+	   00000004 R
+ 0000054D  7C 09			jl continueToAddition
+ 0000054F  66| C7 05			mov solMatrixNumDown, 0		; our row = ROWS, so we set the number underneath to = 0
+	   000007E2 R
+	   0000
+					
+ 00000558				continueToAddition:
+ 00000558  66| 8B 0D			mov cx, solMatrixNumRight
+	   000007E0 R
+ 0000055F  66| 3B 0D			cmp cx, solMatrixNumDown
+	   000007E2 R
+ 00000566  7F 1A			jg goRight
+					
+ 00000568				goDown:
+ 00000568  66| FF 05				inc row
+	   00000004 R
+						output d
+ 0000057D  E9 FFFFFF02				jmp path_loop
+						
+					
+ 00000582				goRight:
+ 00000582  66| FF 05				inc col
+	   00000006 R
+						output r
+ 00000597  E9 FFFFFEE8				jmp path_loop
+					
+					
+					
+ 0000059C			done_3:
+
+					output carriage
+					output carriage
+
+				INVOKE  ExitProcess, 0
+					
+ 000005BF			PUBLIC _start
+
+				END
+					
+					
+					
+						
+					
+
+					
+
+	
+Microsoft (R) Macro Assembler Version 6.15.8803		    03/18/19 10:31:05
+vankins.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atoi . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+getElement . . . . . . . . . . .	Proc
+inputD . . . . . . . . . . . . .	Proc
+inputW . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+itoa . . . . . . . . . . . . . .	Proc
+outputD  . . . . . . . . . . . .	Proc
+outputW  . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+setElement . . . . . . . . . . .	Proc
+setMatrixFromInput . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 DWord	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000080B DWord	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000005BF DWord	  Public  'CODE'	
+
+
+Procedures,  parameters and locals:
+
+                N a m e                 Type     Value    Attr
+
+$$$00001 . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000005BF Private
+  set_array_elements_loop  . . .	L Near	 0000008C _TEXT	
+  output_loop_1  . . . . . . . .	L Near	 000000E8 _TEXT	
+  regularOuput . . . . . . . . .	L Near	 0000010F _TEXT	
+  solution_matrix_loop . . . . .	L Near	 00000227 _TEXT	
+  make_solMatrixNumRight_Zero  .	L Near	 000002BD _TEXT	
+  continue . . . . . . . . . . .	L Near	 000002C6 _TEXT	
+  addFromRight . . . . . . . . .	L Near	 00000328 _TEXT	
+  addFromDown  . . . . . . . . .	L Near	 00000370 _TEXT	
+  Check_Column . . . . . . . . .	L Near	 000003B6 _TEXT	
+  done_2 . . . . . . . . . . . .	L Near	 000003DE _TEXT	
+  output_loop_2  . . . . . . . .	L Near	 000003F6 _TEXT	
+  solutionsOutput  . . . . . . .	L Near	 0000041D _TEXT	
+  path_loop  . . . . . . . . . .	L Near	 00000484 _TEXT	
+  continueToRows . . . . . . . .	L Near	 00000502 _TEXT	
+  continueToAddition . . . . . .	L Near	 00000558 _TEXT	
+  goDown . . . . . . . . . . . .	L Near	 00000568 _TEXT	
+  goRight  . . . . . . . . . . .	L Near	 00000582 _TEXT	
+  done_3 . . . . . . . . . . . .	L Near	 0000059C _TEXT	
+ExitProcess  . . . . . . . . . .	P Near	 00000000 FLAT	Length= 00000000 External STDCALL
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+COLS . . . . . . . . . . . . . .	Word	 00000002 _DATA	
+COUNTER  . . . . . . . . . . . .	Word	 0000000A _DATA	
+CR . . . . . . . . . . . . . . .	Number	 0000000Dh   
+Check_Column . . . . . . . . . .	L Near	 000003B6 _TEXT	
+ITERATION  . . . . . . . . . . .	Word	 00000008 _DATA	
+LF . . . . . . . . . . . . . . .	Number	 0000000Ah   
+MATRIX . . . . . . . . . . . . .	Word	 00000010 _DATA	
+NumToGet . . . . . . . . . . . .	Word	 0000000C _DATA	
+NumToPlace . . . . . . . . . . .	Word	 0000000E _DATA	
+ROWS . . . . . . . . . . . . . .	Word	 00000000 _DATA	
+SOL_MATRIX . . . . . . . . . . .	Word	 000003F8 _DATA	
+_start . . . . . . . . . . . . .	L Near	 00000000 _TEXT	Public
+addFromDown  . . . . . . . . . .	L Near	 00000370 _TEXT	
+addFromRight . . . . . . . . . .	L Near	 00000328 _TEXT	
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atoiproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+carriage . . . . . . . . . . . .	Byte	 000007FB _DATA	
+col  . . . . . . . . . . . . . .	Word	 00000006 _DATA	
+continueToAddition . . . . . . .	L Near	 00000558 _TEXT	
+continueToRows . . . . . . . . .	L Near	 00000502 _TEXT	
+continue . . . . . . . . . . . .	L Near	 000002C6 _TEXT	
+done_2 . . . . . . . . . . . . .	L Near	 000003DE _TEXT	
+done_3 . . . . . . . . . . . . .	L Near	 0000059C _TEXT	
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+d  . . . . . . . . . . . . . . .	Byte	 000007F9 _DATA	
+goDown . . . . . . . . . . . . .	L Near	 00000568 _TEXT	
+goRight  . . . . . . . . . . . .	L Near	 00000582 _TEXT	
+inproc . . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+itoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+loc  . . . . . . . . . . . . . .	Word	 000007E6 _DATA	
+make_solMatrixNumRight_Zero  . .	L Near	 000002BD _TEXT	
+outproc  . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+output_loop_1  . . . . . . . . .	L Near	 000000E8 _TEXT	
+output_loop_2  . . . . . . . . .	L Near	 000003F6 _TEXT	
+path_loop  . . . . . . . . . . .	L Near	 00000484 _TEXT	
+prompt3  . . . . . . . . . . . .	Byte	 000007E8 _DATA	
+regMatrixNum . . . . . . . . . .	Word	 000007E4 _DATA	
+regularOuput . . . . . . . . . .	L Near	 0000010F _TEXT	
+row  . . . . . . . . . . . . . .	Word	 00000004 _DATA	
+r  . . . . . . . . . . . . . . .	Byte	 000007F7 _DATA	
+set_array_elements_loop  . . . .	L Near	 0000008C _TEXT	
+solMatrixNumDown . . . . . . . .	Word	 000007E2 _DATA	
+solMatrixNumRight  . . . . . . .	Word	 000007E0 _DATA	
+solution_matrix_loop . . . . . .	L Near	 00000227 _TEXT	
+solutionsOutput  . . . . . . . .	L Near	 0000041D _TEXT	
+testText . . . . . . . . . . . .	Byte	 000007EA _DATA	
+text . . . . . . . . . . . . . .	Byte	 000007FE _DATA	
+
+	   0 Warnings
+	   0 Errors

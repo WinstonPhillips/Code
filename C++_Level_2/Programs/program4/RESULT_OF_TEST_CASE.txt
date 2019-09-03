@@ -1,0 +1,23 @@
+
+Welcome to Infix to Postfix Converter!
+
+Please enter the expression you wish to convert:
+Expression in infix notation: 5 + 4 * ( 9 - 3 ) / 2 
+Expression in Postfix Notation: 5 4 9 3 - * 2 / + 
+Solution: 17
+
+Do you wish to enter another expression?(Y/N): 
+Please enter the expression you wish to convert:
+Expression in infix notation: 4 + 6 * 5 
+Expression in Postfix Notation: 4 6 5 * + 
+Solution: 34
+
+Do you wish to enter another expression?(Y/N): 
+Please enter the expression you wish to convert:
+Expression in infix notation: ( 2 + 3 ) - 7 / 9 
+Expression in Postfix Notation: 2 3 + 7 9 / - 
+Solution: 4.22222
+
+Do you wish to enter another expression?(Y/N): 
+
+Good Bye! Live long and prosper!

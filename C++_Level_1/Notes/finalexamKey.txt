@@ -1,0 +1,52 @@
+final test key
+
+1. false (iomanip)
+2. true
+3. false enumerator-  a special data type
+4. false
+5. false
+6. true
+7. false
+8. true
+9. false
+10. false
+11. false
+12. false -- must have a size, cannot be empy brackets or empy []
+13. false
+14. false
+15. false (a$$ question)
+
+16. B.
+17. C. -- don't forget the null terminator!!(takes up one space)
+18. D. '++' is a post script, ,happens after everything occurs
+19. D.
+20. D.
+21. C. (15==header)
+22. A.
+
+23. Post-test
+24. integer, 0
+25. zero
+
+26. heap, larg, messy
+27. reusability
+28. no relational aguments
+29. Global variables are evil and must be stopped(Evil)
+30. easier to keep track of everything 
+
+for coding, know your structs 
+
+look at extra credit---
+
+3
+6
+5
+1
+2
+7
+
+SPMCOLE
+
+
+
+

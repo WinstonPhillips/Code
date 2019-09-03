@@ -1,0 +1,7 @@
+Stacks
+	last in, first out ADT
+
+Push(stackName,data) puts the data in the "stack"
+pop(stackName) displays all elements of the stack, or that last item inserted
+
+Peek(stackName) : displays, but does not return, a node of the stack. stack remains the same

@@ -1,0 +1,71 @@
+2/5/2018
+quiz: look at list functions and building 
+
+Lists
+
+iterator: used with list to keep track of position
+
+5 categories of iterators
+	we will be using bideirectional (forward and backward)
+	with an iterator, we can move and add to a list easily
+
+example: int main()	// including <list>
+	{
+	  string name;
+	  list<string> myList;
+	  list<string>::iterator myIterator;	// just declared iterator
+	  //printing out the list
+	  
+for(myIterator = myList.front(); myIterator != myList.end(); myIterator++)
+	{
+	name = *myIterator // dereferenced, so now just the info at that node
+	cout << name << endl;
+	}
+	// incrementing the iterator just makes it go to the next node
+	
+	// may be confusing, the myList.end() 
+
+insert()
+
+	myList.insert(iteratorPosition, newElement)
+	// inserts newElement into the list before the iterator position
+
+erase()
+	
+
+
+myIterator = myList.begin(); 	// now at beginning of list
+myIterator++;
+myIterator++;	// now at THIRD postition of list
+
+myList.insert(myIterator,"This is a new element of type string")
+	// this is now in the third position, and what was in the 3rd position is now in the fourth
+
+myList.erase(myIterator);
+	// now the info at position 3 is removed
+	// erases whatever iterator is pointing to
+	
+for for loops TIP:::::::::: auto madeUpIterator = myList.begin(); ////////
+				// auto is much like the temporary int i = 0 for for loops
+				// automatically knows what type to deal with
+
+
+Singly linked list
+	if we didnt have a list library provided for us
+	
+My god this fucking woman
+	
+	struct ListNode
+{
+	double value;
+	ListNode* next
+}// located in private part of class
+	ListNode* Head;
+	ListNode* Tail;
+
+public:
+	NumberList()
+	{
+	Head = NULL;
+	Tail = NULL;
+	}

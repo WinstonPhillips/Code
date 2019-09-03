@@ -1,0 +1,147 @@
+Binary Trees
+
+each node in a BInary tree can point to up to 2 nodes
+
+Tree Pointer: pointer that points to the tree
+
+Root Node: the node at the "top" of the tree (the beginning node)
+
+leaf nodes: nodes that do not point to any other nodes
+
+child nodes: nodes directly below a given node
+
+
+parent Node: node above a node (or set of nodes)
+
+ancestors: all nodes above a given node
+
+internal nodes: nodes that DO have at least one child (opposite of a leaf node) 
+
+subtree: portion of a tree from a node down to the leaves
+
+
+/////////////////////////////////////////////////////////////////////////////////
+
+depth: number of edges on the path from the root to the node (edges = arrows)
+
+all nodes with the same depth form a tree "level" (depth of root is zero 0, think of it like an index)
+
+height: the tree's largest depth of all nodes in the tree
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+Binary SEARCH trees
+
+left subtree of a node contains values less than the data in the node
+
+right subtree of  a node contains values greater than the data in the node
+
+when a value is inserted, you just go down the tree
+
+searching 
+
+	1. if searchVAlue == node value, stop
+	2 else if searchValue > node value, repeat step 1 with RIGHT SUBTREE
+	3. else if searchValue < node value, repeat step 1 with LEFT SUBTREE
+
+	do this until the search value is reached or you reach a null pointer
+
+common tree operations
+	createTree
+	insertValue
+	findValue
+	remove/delete
+
+code for binary tree
+
+class BinaryTree
+{
+	private:
+	struct TreeNode
+	{
+		int value;
+		TreeNode* = leftChild;
+		TreeNode* = rightChild;
+	};
+	TreeNode* root; // head of tree
+
+	public:
+	BinaryTree()
+	{
+	 root = NULL;
+	 
+	}
+{
+
+
+};
+
+////////////////////////////////////////////////////////////////////////////////////
+
+deletion
+
+if it is a leaf node, just release the node and cut the length
+
+if not
+	the PARENTS right node needs to be attached to the child node (of the node to be deleted)
+		link ought to be established first
+	
+steps in confuding cases
+
+	1) find the minnimum value of right subtree of the node you want to delete
+	2) Reattach the left subtree (if there is one)
+		you're attaching the left subtree to the minimum value of the right subtree
+	3) store the node to be deleted (in temp)
+	4) connect the parent node of the node to be deleted to the minimum value of the right subtree
+	
+function
+
+destroy_subtree( Treenode* nodePtr)`// and maybe entire tree
+{
+	if (nodePtr != NULL)
+	{
+		if (node->left != NULL)
+		{
+			destroy subTree(nodePtr->left);
+		}
+		if (nodePtr->right != NULL)
+		{
+			destroy subTree(nodePtr->right);	
+		}
+
+		delete nodePtr;
+	}
+}		
+
+
+removeNode(int)	// integer == value inside of node you wish to delete
+{
+	delete(num,root); // recursive private function
+}
+
+deleteNode(num number, TreeNode* root) // really, just find the node we need to delete. does not actually delete
+{
+	if (number < nodePtr->value)
+	{
+		deleteNode(number, nodePtr->left);
+	}
+	else if (number > nodePtr->value)
+	{
+	deleteNode(number, nodePtr->value)
+	}
+	else if (number == nodePtr->value)
+	{
+	makeDeleteion(nodePtr)
+	}
+	else
+	{
+	cout << "Node does not exist"
+	}
+}
+
+void makeDeletion(TreeNode* &nodePtr)	// pass by referebce because we are making changes to nodes
+{
+	TreeNode* tempNodePtr = NULL;
+
+	

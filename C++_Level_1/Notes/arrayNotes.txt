@@ -1,0 +1,25 @@
+Arrays
+
+comparing lottery 
+
+set 3rd array = lottery array
+
+we then compare guesses to lottery copy 
+
+code for comparing two arrays :
+
+for (int i = 0; i < NUM_CHOICES; i++)
+	{
+		for (int j = 0; j < NUM_CHOICES; j++)
+			{
+				if 
+					{	
+						guesses[i] == lottCopy[j];
+						correct++;
+						lottCopy[j] = 0;	// now no other numbers can be compared because 0 is not included in random ints
+						break;			// after first right comparison, breaks the loop so right numbers are not counted twice as being right
+					}
+			}
+	}
+
+

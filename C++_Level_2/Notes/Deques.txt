@@ -1,0 +1,54 @@
+Deque
+
+it standard template library
+
+stands for "double ended queue"
+	meaning can insert or pull from either the front or back of the deque
+
+header file: #include <deque>
+
+declaration: deque<int> myDeque;
+
+push_front()-- adds to front of the deque
+push_back()-- adds to back of the deque
+pop_front()-- removes first node from the deck
+pop_back()-- removes last node from deque (last entered)
+front()-- returns value of first node, doesn't remove (really never does)
+
+enqueue: pushes form the front
+
+dequeue: just look at tophat
+
+Test-------------------------------------------------------------------------------
+
+ch 1- 18 quesions
+	vocabulary: attribute, member functions, encapsulation, access specifier (private and public), scope resolution operator(::), pointer operator(->), class declaration
+			include guards (#ifndef)
+			inline member functions
+			syntax of how to call a member function in an object (we use the dot operator)
+				ex: myObject.getLength();
+					myObject->getLength(); // if myObject was a pointer
+ch 3- 6 quesions
+	what is a makefile?
+	command line arguments
+	templates 
+ch 4- 22 questions
+	data structurre organize data
+	iterator acts like a pointer: accesses data elements in a container
+	container: a class that organizes and stores data
+	
+	List ADT: singly linked and double linked
+		How do you know you are at the end of a list: Null pointer (duh)
+	traveleing through a list (**Traversing) with a pointer
+		when we used a temporary pointer and for loops (you know that)
+	common list adt operations
+	header files(list,stack/queue/deque)
+
+
+	***Queues and Stacks can either be implemented with arrays(static) or linked lists (dynamic)
+		dequeue and enqueue(look at tophat)
+
+	TOPHAT IS YOUR FRIEND DUDE
+
+list/data structures/ standard template library/ container/ iterator/ list adt
+

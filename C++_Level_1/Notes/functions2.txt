@@ -1,0 +1,12 @@
+Functions 2
+
+	function header :: void  functNamee(parameters)
+
+// include guard
+
+#if !defined MY_FUNCTION_H		// if my function is not defined 
+#define MY_FUNCTION_H
+
+
+
+#end if
